@@ -6,6 +6,8 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import controller.master.MasterController;
+
 
 public class PokemonMAIN implements ServletContextListener
 {
@@ -29,9 +31,10 @@ public class PokemonMAIN implements ServletContextListener
 	
 	private void startControllers()
 	{
-		logger.info("\n*********** STARTING POKEMON CONTROLLERS");
+		logger.info("\n*********** STARTING POKEMON - PSEUDO MAIN");
 		
 		
+		MasterController masterController = MasterController.getInstance();
 	}
 	
 	@Override
