@@ -30,8 +30,11 @@ public class HelloServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 		response.addHeader("Content-Type", "application/json");
+		
+		String queryString = request.getQueryString();
+		
 		PrintWriter writer = response.getWriter();
-		writer.write("{ 'hello': 'hello' }");
+		writer.write(String.format("{ 'queryString': '%s' }", queryString));
 	}
 
 	/**
