@@ -31,6 +31,8 @@ public class HelloServlet extends HttpServlet {
 	{
 		response.addHeader("Content-Type", "application/json");
 		
+		// TESTING COMMIT
+		
 		String queryString = request.getQueryString();
 		
 		PrintWriter writer = response.getWriter();
