@@ -7,6 +7,7 @@ import com.pokejava.Ability;
 import com.pokejava.Move;
 import com.pokejava.Pokedex;
 import com.pokejava.Pokemon;
+import com.pokejava.Type;
 
 public class PokeApiConnector 
 {
@@ -34,6 +35,12 @@ public class PokeApiConnector
 			names.add(p.getName());
 		}
 		return names;
+	}
+	
+	public List<Type> getPokemonTypes(String pokemonName)
+	{
+		Pokemon p = getPokemon_byName(pokemonName);
+		return p.getTypes();
 	}
 	
 	public Pokemon getPokemon_byName(String pokemonName)
