@@ -13,7 +13,9 @@
 <body>
 	<h1>Pokemon Battle</h1>
 	
-	
+	<div class="flow">
+		
+	</div>
 	<div class="button resetButton">Reset Battle</div>
 	<script type="text/javascript" src="js/dynamics_universal.js"></script>
 	<script type="text/javascript" src="js/dynamics_home.js"></script>

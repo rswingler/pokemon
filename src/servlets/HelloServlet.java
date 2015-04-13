@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import controllers.MasterController;
+
 import java.util.HashMap;
 
 /**
@@ -35,12 +37,14 @@ public class HelloServlet extends HttpServlet {
 	
 	private String myPeerID;
        
+	private MasterController masterControl;
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public HelloServlet() {
+    public HelloServlet()
+    {
         super();
-        // TODO Auto-generated constructor stub
+        masterControl = MasterController.getInstance();
     }
 
 	/**
