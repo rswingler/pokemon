@@ -36,7 +36,7 @@ public class GetPokemon extends HttpServlet {
 		
 		//masterControl.sendBattleRequestMessageToAll();
 		
-		String pokemon = masterControl.getPokemonController().getRandomPokemon();
+		String pokemon = masterControl.getPokemonController().getRandomPokemon_string();
 		logger.info("*******RANDOM POKEMON: " + pokemon);
 		response.addHeader("Content-Type", "application/json");
 		PrintWriter writer = response.getWriter();

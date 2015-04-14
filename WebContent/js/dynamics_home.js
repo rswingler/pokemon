@@ -30,7 +30,7 @@ function addListeners_home()
 function startNewBattle()
 {
 	console.log("*** STARTING NEW BATTLE");
-	var url = BASE_URL + "lightning";
+	var url = BASE_URL + "startbattle";
 	$.get( url, function( data )
 	{
 		//JUST SENDS THE MESSAGE TO OTHER CLIENTS
