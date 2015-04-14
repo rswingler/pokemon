@@ -21,7 +21,7 @@ public class GossipConnector
 	public GossipConnector()
 	{
 		peers = new ArrayList<String>();
-		setPeers();
+		setPeers(); //SET PEERS UPON INSTANTIATION
 	}
 	
 	/**
@@ -51,18 +51,16 @@ public class GossipConnector
 	 * @param querySuffix the query string to be concatenated to each peer's base URL
 	 * @param message the message to be sent, in JSON format
 	 */
-	public void sendMessage(String querySuffix, String message)
+	public void sendMessage(String querySuffix)
 	{
 		for (String peerURL : peers)
 		{
 			String fullURL = peerURL + querySuffix;
-			String response = httpPOST(fullURL, message); //ASSUMES OUTGOING MESSAGE IS JSON - CHECK "Content-Type" in httpPOST
+			String response = httpGET(fullURL); //ASSUMES OUTGOING MESSAGE IS JSON - CHECK "Content-Type" in httpPOST
 		}
 	}
 	
-	
-	
-	private String httpGET(String requestURL) 
+	private String httpGET(String requestURL)
 	{	
 		StringBuffer response = new StringBuffer();
 		try

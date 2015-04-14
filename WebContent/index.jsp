@@ -6,17 +6,25 @@
 <title>Pokemon Battle</title>
 <link href='http://fonts.googleapis.com/css?family=Open+Sans'
 	rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="css/styleUniversal.css">
 <link rel="stylesheet" href="css/styleHome.css">
 <script type="text/javascript" src="js/jquery/jquery-2.1.3.min.js"></script>
 </head>
 <body>
 	<h1>Pokemon Battle</h1>
 	
-	<div class="flow">
-		
+	<div class="battleContainer">
+		<div class="leftNav"></div>
+		<div class="battleImgContainer">
+					<div class="battleImgWrapper">
+						<div class="myPokemonImg pokemonImg"></div>
+						<div class="opponentPokemonImg pokemonImg"></div>
+					</div>
+		</div>
+		<div class="controlPanel">
+			<div class="button newBattleButton">New Battle</div>
+			<div class="textBox infoMessage"></div>
+		</div>
 	</div>
-	<div class="button resetButton">Reset Battle</div>
 	<script type="text/javascript" src="js/dynamics_universal.js"></script>
 	<script type="text/javascript" src="js/dynamics_home.js"></script>
 </body>

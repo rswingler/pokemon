@@ -1,30 +1,47 @@
 package io.connectors.pokeAPI;
 
+import io.connectors.pokejava.*;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.logging.Logger;
 
-import com.pokejava.Ability;
-import com.pokejava.Move;
-import com.pokejava.Pokedex;
-import com.pokejava.Pokemon;
-import com.pokejava.Type;
 
 public class PokeApiConnector 
 {
+	protected static Logger logger = Logger.getLogger("pokemon");
+
 	/*
 	 * This class handles all direct HTTP communication with the PokeAPI
 	 */
-	Pokedex pokedex;
+	//Pokedex pokedex;
 	List<Pokemon> pokemons;
 	public PokeApiConnector()
 	{
-		pokedex = new Pokedex();
-		pokemons = pokedex.getPokemons();
+		//pokedex = new Pokedex();
+		pokemons = new ArrayList<Pokemon>();
+		initPokedex(); //TAKES A FEW MINUTES
 	}
 		
-	public List<Pokemon> getAllPokemon()
+//	public List<Pokemon> getAllPokemon()
+//	{
+//		return pokemons;
+//	}
+	
+	public void initPokedex()
 	{
-		return pokemons;
+		logger.info("\n\n\n\n\n**** DOWNLOADING POKEDEX - THIS TAKES A WHILE - IGNORE THE EXCEPTIONS FOR 'level' ");
+		double startTime = System.currentTimeMillis();			 
+
+		Pokedex p = new Pokedex();
+		pokemons = p.getPokemons();
+		double finishTime = System.currentTimeMillis();
+		double elapsedTime = finishTime - startTime;
+		double elapsedSeconds = elapsedTime / 1000;
+		logger.info("************ UPDATE: " + " POKEDEX " + " COMPLETED IN " + elapsedSeconds + " SECONDS");
+		logger.info("\n\n\n\n**** POKEDEX DOWNLOAD COMPLETE");
+
 	}
 	
 	public List<String> getAllPokemonNames()
@@ -39,7 +56,7 @@ public class PokeApiConnector
 	
 	public List<Type> getPokemonTypes(String pokemonName)
 	{
-		Pokemon p = getPokemon_byName(pokemonName);
+		Pokemon p = getPokemon_byName(pokemonName);		
 		return p.getTypes();
 	}
 	
@@ -54,5 +71,23 @@ public class PokeApiConnector
 		}
 		
 		return null;
+	}
+	
+	public String getPokemonImageURL(String pokemonName)
+	{
+		//http://pokeapi.co/media/img/25.png
+		Pokemon p = getPokemon_byName(pokemonName);
+		int id = p.getID();
+		
+		return "http://pokeapi.co/media/img/" + id + ".png";
+		//p.get
+	}
+	
+	public Pokemon getRandomPokemon()
+	{
+		logger.info("***** GETTING RANDOM POKEMON");
+		Random r = new Random();
+		int randomIndex = r.nextInt(pokemons.size());
+		return pokemons.get(randomIndex);
 	}
 }

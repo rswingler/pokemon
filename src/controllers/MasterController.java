@@ -34,6 +34,9 @@ public class MasterController
         opponentPokemon = "none";
         player = Player.PlayerUnknown;
         battleInProgress = false;
+        
+    	gossipController = new GossipController();
+		pokemonController = new PokemonController();
 	}
 	
 	public static MasterController getInstance()
@@ -41,9 +44,14 @@ public class MasterController
 		if (instance == null)
 		{
 			instance = new MasterController();
+<<<<<<< Updated upstream
 			gossipController = new GossipController();
 			pokemonController = new PokemonController();
 			randomController = new RandomController();
+=======
+//			gossipController = new GossipController();
+//			pokemonController = new PokemonController();
+>>>>>>> Stashed changes
 		}
 		return instance;
 	}
