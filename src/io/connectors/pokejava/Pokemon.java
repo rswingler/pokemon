@@ -65,7 +65,7 @@ public class Pokemon extends ModelClass {
 	}
 	
 	//Takes arguments from Constructors and initializes all properties
-	private void initializePokemon(String data){
+	public void initializePokemon(String data){
 		if (data.equals("")){
 			
 			Name = "";

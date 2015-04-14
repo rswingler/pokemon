@@ -48,6 +48,10 @@ public class StartBattle extends HttpServlet {
 		Pokemon pokemon1 = pokeControl.getRandomPokemon();
 		Pokemon pokemon2 = pokeControl.getRandomPokemon();
 		
+		System.out.println("POKEMON1: " + pokemon1.getName());
+		System.out.println("POKEMON2: " + pokemon2.getName());
+
+		
 		//PERSIST PLAYER ONE AND TWO IN MEMORY - IN THE POKEMON CONTROLLER
 		pokeControl.setPlayerOne(pokemon1);
 		pokeControl.setPlayerTwo(pokemon2);

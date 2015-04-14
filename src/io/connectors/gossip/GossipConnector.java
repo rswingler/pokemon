@@ -37,7 +37,9 @@ public class GossipConnector
 	private void setPeers_ImServer_A() //I AM SERVER "A", SET MY PEERS
 	{
 		peers.clear();
-		peers.add(SERVER_B);
+		//peers.add(SERVER_B);
+		peers.add(SERVER_A);
+
 	}
 	
 	private void setPeers_ImServer_B() //I AM SERVER "B", SET MY PEERS

@@ -20,3 +20,7 @@ body, html {
 .pokemonImg {
 	height: 200px;
 }
+
+.pokebox {
+	float: left;
+}
