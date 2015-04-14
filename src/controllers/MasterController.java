@@ -63,5 +63,11 @@ public class MasterController
 	{
 		return randomController;
 	}
+	
+	public void sendBattleRequestMessageToAll()
+	{
+		String queryString = QueryParamTypes.queryParam_messageType + "=" + QueryParamTypes.messageType_battleRequest;
+		gossipController.blastMessage(queryString);
+	}
 
 }
