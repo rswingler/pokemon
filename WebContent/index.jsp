@@ -14,12 +14,12 @@
 	
 	<div class="battleContainer">
 		<div class="leftNav"></div>
-		<div class="battleImgContainer">
+<!-- 		<div class="battleImgContainer">
 					<div class="battleImgWrapper">
 						<div class="myPokemonImg pokemonImg"></div>
 						<div class="opponentPokemonImg pokemonImg"></div>
 					</div>
-		</div>
+		</div> -->
 		<div class="controlPanel">
 			<div class="button newBattleButton">New Battle</div>
 			<div class="textBox infoMessage"></div>

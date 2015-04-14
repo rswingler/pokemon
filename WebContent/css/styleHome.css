@@ -16,3 +16,7 @@ body, html {
 .textBox {
 	display: inline-block;
 }
+
+.pokemonImg {
+	height: 200px;
+}
