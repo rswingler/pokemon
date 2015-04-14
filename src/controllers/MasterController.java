@@ -19,6 +19,7 @@ public class MasterController
 	
 	private static GossipController gossipController;
 	private static PokemonController pokemonController;
+	private static RandomController randomController;
 	
 	private MasterController()
 	{
@@ -42,6 +43,7 @@ public class MasterController
 			instance = new MasterController();
 			gossipController = new GossipController();
 			pokemonController = new PokemonController();
+			randomController = new RandomController();
 		}
 		return instance;
 	}
@@ -54,6 +56,11 @@ public class MasterController
 	public PokemonController getPokemonController()
 	{
 		return pokemonController;
+	}
+	
+	public RandomController getRandomController()
+	{
+		return randomController;
 	}
 
 }
