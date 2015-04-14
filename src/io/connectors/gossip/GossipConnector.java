@@ -55,7 +55,7 @@ public class GossipConnector
 	{
 		for (String peerURL : peers)
 		{
-			String fullURL = peerURL + querySuffix;
+			String fullURL = peerURL + "Lightning/" + "?" +  querySuffix;
 			String response = httpGET(fullURL); //ASSUMES OUTGOING MESSAGE IS JSON - CHECK "Content-Type" in httpPOST
 		}
 	}
