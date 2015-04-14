@@ -199,6 +199,7 @@ public class HelloServlet extends HttpServlet {
 		if (masterControl.player == Player.Player1)
 		{
 			// TODO: Send back our pokemon info, signifying that the battle has begun!
+			
 			masterControl.state = GameState.State_MyTurn;
 		}
 		else if (masterControl.player == Player.Player2)
@@ -222,14 +223,14 @@ public class HelloServlet extends HttpServlet {
 		if (damage.equals(QueryParamTypes.damageType_critical))
 		{
 			// End game (somehow)
+			masterControl.state = GameState.State_GameOver;
+			//TODO: Somehow signal the UI to say "You lost"
 		}
-		else if (damage.equals(QueryParamTypes.damageType_effective))
+		else if (damage.equals(QueryParamTypes.damageType_effective) || damage.equals(QueryParamTypes.damageType_notEffective))
 		{
-			
-		}
-		else if (damage.equals(QueryParamTypes.damageType_notEffective))
-		{
-			
+			// Game continues, but it's now my turn.
+			masterControl.state = GameState.State_MyTurn;
+			//TODO: Somehow signal the UI to say "Your Turn"
 		}
 	}
 	
