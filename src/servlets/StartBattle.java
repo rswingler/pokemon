@@ -2,7 +2,6 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,34 +12,31 @@ import javax.servlet.http.HttpServletResponse;
 import controllers.MasterController;
 
 /**
- * Servlet implementation class GetPokemon
+ * Servlet implementation class StartBattle
  */
-@WebServlet("/randompokemon")
-public class GetPokemon extends HttpServlet {
+@WebServlet("/startbattle")
+public class StartBattle extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-	protected static Logger logger = Logger.getLogger("pokemon");
-
-    public GetPokemon() {
+    public StartBattle() {
         super();
+        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		//SEND BATTLE MESSAGE TO PEERS
 		MasterController masterControl = MasterController.getInstance();
-		
-		//masterControl.sendBattleRequestMessageToAll();
-		
-		String pokemon = masterControl.getPokemonController().getRandomPokemon();
-		logger.info("*******RANDOM POKEMON: " + pokemon);
+		masterControl.sendBattleRequestMessageToAll();
 		response.addHeader("Content-Type", "application/json");
 		PrintWriter writer = response.getWriter();
-		writer.write(pokemon);
+		writer.write("{'success':'success'}");
 	}
 
 	/**

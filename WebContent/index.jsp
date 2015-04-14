@@ -27,7 +27,6 @@
 			<div class="textBox infoMessage"></div>
 		</div>
 	</div>
-	<script type="text/javascript" src="js/dynamics_universal.js"></script>
 	<script type="text/javascript" src="js/dynamics_home.js"></script>
 </body>
 </html>
