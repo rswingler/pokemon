@@ -33,7 +33,7 @@ public class GetPokemon extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		MasterController masterControl = MasterController.getInstance();
-
+		
 		String pokemon = masterControl.getPokemonController().getRandomPokemon();
 		logger.info("*******RANDOM POKEMON: " + pokemon);
 		response.addHeader("Content-Type", "application/json");

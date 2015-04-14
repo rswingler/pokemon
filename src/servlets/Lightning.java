@@ -66,8 +66,8 @@ public class Lightning extends HttpServlet {
 		}
 		
 		// Only respond to this GET request if it was addressed to me, or all peers
-		if (toPeerID.equals(QueryParamTypes.toPeers_all) || toPeerID.equals(masterControl.myPeerID))
-		{
+//		if (toPeerID.equals(QueryParamTypes.toPeers_all) || toPeerID.equals(masterControl.myPeerID))
+//		{
 			switch (masterControl.state)
 			{
 			case State_Lobby:
@@ -93,7 +93,7 @@ public class Lightning extends HttpServlet {
 			default:
 				break;
 			}
-		}
+		//}
 	}
 
 	/**

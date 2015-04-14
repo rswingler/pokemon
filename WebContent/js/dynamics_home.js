@@ -21,6 +21,10 @@ function addListeners_home()
 	 $(".newBattleButton").click(function(){
 		 startNewBattle();
 	 });
+	 
+	 $(".attackButton").click(function(){
+		 attack();
+	 });
 }
 
 function startNewBattle()
@@ -56,4 +60,9 @@ function loadPokemon( pokemon )
 
 
 	//console.log(data);
+}
+
+function attack()
+{
+	console.log("ATTACK");
 }

@@ -22,6 +22,8 @@
 		</div> -->
 		<div class="controlPanel">
 			<div class="button newBattleButton">New Battle</div>
+			<div class="button attackButton">Attack</div>
+			<br>
 			<div class="textBox infoMessage"></div>
 		</div>
 	</div>
