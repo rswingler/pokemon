@@ -29,6 +29,8 @@ function addListeners_home()
 
 function startNewBattle()
 {
+	$(".winnerMessage").css("display", "none");
+	
 	console.log("*** STARTING NEW BATTLE");
 	var url = BASE_URL + "startbattle";
 	$.get( url, function( pokemons )
@@ -96,5 +98,28 @@ function loadPokemons( pokemons )
 
 function attack()
 {
-	console.log("ATTACK");
+	console.log("**** STARTING ATTACK")
+	var url = BASE_URL + "attack";
+	$.get( url, function( winner )
+	{
+		loadWinner(winner);
+	});
 }
+
+function loadWinner( winner )
+{
+	console.log("**** LOADING WINNER");
+
+	var winnerBox = $(".winnerMessage");
+	
+	var name = winner["Name"]; //case sensitive
+//	var speed1 = winner["Speed"];
+//	var hp1 = winner["HP"];
+//	var attack1 = winner["Attack"];
+//	var defense1 = winner["Defense"];
+//	var id1 = winner["ID"];
+	winnerBox.empty();
+	winnerBox.append( name + " WINS!!!");
+	winnerBox.fadeIn(500);
+}
+

@@ -1,10 +1,13 @@
 package controllers;
 
 import java.util.UUID;
+import java.util.logging.Logger;
 
 
 public class MasterController 
 {
+	protected static Logger logger = Logger.getLogger("pokemon");
+
 	public String myPeerID;
     
 	// Battle Info

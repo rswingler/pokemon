@@ -25,6 +25,7 @@
 			<div class="button attackButton">Attack</div>
 			<br>
 			<div class="textBox infoMessage"></div>
+			<div class="textBox winnerMessage"></div>
 		</div>
 	</div>
 	<script type="text/javascript" src="js/dynamics_home.js"></script>

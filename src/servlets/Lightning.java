@@ -2,6 +2,7 @@ package servlets;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,6 +23,8 @@ public class Lightning extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
+	protected static Logger logger = Logger.getLogger("pokemon");
+
 	private MasterController masterControl;
     public Lightning() {
         super();
@@ -34,6 +37,8 @@ public class Lightning extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		logger.info("****** LIGTNING doGET: ");
 		String queryString = request.getQueryString();
 		String[] parameters = queryString.split("&");
 		
