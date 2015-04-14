@@ -19,7 +19,7 @@ import java.util.HashMap;
 /**
  * Servlet implementation class HelloServlet
  */
-@WebServlet("/helloservlet") //BROWSER: POST host:port/helloservlet
+@WebServlet("/logicservlet")
 public class LogicServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	   
@@ -30,6 +30,7 @@ public class LogicServlet extends HttpServlet {
     public LogicServlet()
     {
         super();
+        masterControl = MasterController.getInstance();
     }
 
 	/**
@@ -37,8 +38,6 @@ public class LogicServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-        masterControl = MasterController.getInstance();
-
 		response.addHeader("Content-Type", "application/json");
 		
 		String queryString = request.getQueryString();
@@ -142,13 +141,20 @@ public class LogicServlet extends HttpServlet {
 	{
 		if (masterControl.battleInProgress)
 		{
-			// TODO: Send back a "Battle Rejected" message via gossip
+			// Send back a "Battle Rejected" message via gossip
+			sendBattleRejectedMessage(fromPeerID);
 		}
 		else
 		{
 			if (masterControl.player == Player.Player1)
 			{
-					// TODO: Send back a "Battle Accepted" message via gossip
+					// Send back a "Battle Accepted" message via gossip
+					String queryString = QueryParamTypes.queryParam_messageType + "=" + QueryParamTypes.messageType_battleAccepted;
+					queryString += "&" + QueryParamTypes.queryParam_fromPeer + "=" + MasterController.getInstance().myPeerID;
+					queryString += "&" + QueryParamTypes.queryParam_toPeer + "=" + fromPeerID;
+					queryString += "&" + QueryParamTypes.queryParam_battleUID + "= " + battleID;
+					masterControl.getGossipController().blastMessage(queryString);
+					
 					masterControl.state = GameState.State_WaitingForInfo;
 			}
 			else if (masterControl.player == Player.Player2)
@@ -193,6 +199,7 @@ public class LogicServlet extends HttpServlet {
 		if (masterControl.player == Player.Player1)
 		{
 			// TODO: Send back our pokemon info, signifying that the battle has begun!
+			
 			masterControl.state = GameState.State_MyTurn;
 		}
 		else if (masterControl.player == Player.Player2)
@@ -216,16 +223,77 @@ public class LogicServlet extends HttpServlet {
 		if (damage.equals(QueryParamTypes.damageType_critical))
 		{
 			// End game (somehow)
+			masterControl.state = GameState.State_GameOver;
+			//TODO: Somehow signal the UI to say "You lost"
 		}
-		else if (damage.equals(QueryParamTypes.damageType_effective))
+		else if (damage.equals(QueryParamTypes.damageType_effective) || damage.equals(QueryParamTypes.damageType_notEffective))
 		{
-			
-		}
-		else if (damage.equals(QueryParamTypes.damageType_notEffective))
-		{
-			
+			// Game continues, but it's now my turn.
+			masterControl.state = GameState.State_MyTurn;
+			//TODO: Somehow signal the UI to say "Your Turn"
 		}
 	}
+	
+	// Messages
+	public void sendBattleRequestMessageToPeer(String toPeerID)
+	{
+		String queryString = QueryParamTypes.queryParam_messageType + "=" + QueryParamTypes.messageType_battleRequest;
+		queryString += "&" + QueryParamTypes.queryParam_fromPeer + "=" + masterControl.myPeerID;
+		queryString += "&" + QueryParamTypes.queryParam_toPeer + "=" + toPeerID;
+		queryString += "&" + QueryParamTypes.queryParam_battleUID + "=" + masterControl.currentBattleID;
+		masterControl.getGossipController().blastMessage(queryString);
+	}
+	
+	public void sendBattleRequestMessageToAll()
+	{
+		String queryString = QueryParamTypes.queryParam_messageType + "=" + QueryParamTypes.messageType_battleRequest;
+		queryString += "&" + QueryParamTypes.queryParam_fromPeer + "=" + masterControl.myPeerID;
+		queryString += "&" + QueryParamTypes.queryParam_toPeer + "=" + QueryParamTypes.toPeers_all;
+		queryString += "&" + QueryParamTypes.queryParam_battleUID + "=" + masterControl.currentBattleID;
+		masterControl.getGossipController().blastMessage(queryString);
+	}
+	
+	public void sendBattleAcceptedMessage(String toPeerID)
+	{
+		String queryString = QueryParamTypes.queryParam_messageType + "=" + QueryParamTypes.messageType_battleAccepted;
+		queryString += "&" + QueryParamTypes.queryParam_fromPeer + "=" + masterControl.myPeerID;
+		queryString += "&" + QueryParamTypes.queryParam_toPeer + "=" + toPeerID;
+		queryString += "&" + QueryParamTypes.queryParam_battleUID + "=" + masterControl.currentBattleID;
+		masterControl.getGossipController().blastMessage(queryString);
+	}
+	
+	public void sendBattleRejectedMessage(String toPeerID)
+	{
+		String queryString = QueryParamTypes.queryParam_messageType + "=" + QueryParamTypes.messageType_battleRejected;
+		queryString += "&" + QueryParamTypes.queryParam_fromPeer + "=" + masterControl.myPeerID;
+		queryString += "&" + QueryParamTypes.queryParam_toPeer + "=" + toPeerID;
+		queryString += "&" + QueryParamTypes.queryParam_battleUID + "=" + masterControl.currentBattleID;
+		masterControl.getGossipController().blastMessage(queryString);
+	}
+	
+	public void sendOpponentInfoMessage(String toPeerID, String pokemonName)
+	{
+		String queryString = QueryParamTypes.queryParam_messageType + "=" + QueryParamTypes.messageType_opponentInfo;
+		queryString += "&" + QueryParamTypes.queryParam_fromPeer + "=" + masterControl.myPeerID;
+		queryString += "&" + QueryParamTypes.queryParam_toPeer + "=" + toPeerID;
+		queryString += "&" + QueryParamTypes.queryParam_battleUID + "=" + masterControl.currentBattleID;
+		queryString += "&" + QueryParamTypes.opponentInfo_pokemon + "=" + pokemonName;
+		masterControl.getGossipController().blastMessage(queryString);
+	}
+	
+	public void sendPlayerActionMessage(String toPeerID, String abilityName, String damage)
+	{
+		String queryString = QueryParamTypes.queryParam_messageType + "=" + QueryParamTypes.messageType_playerAction;
+		queryString += "&" + QueryParamTypes.queryParam_fromPeer + "=" + masterControl.myPeerID;
+		queryString += "&" + QueryParamTypes.queryParam_toPeer + "=" + toPeerID;
+		queryString += "&" + QueryParamTypes.queryParam_battleUID + "=" + masterControl.currentBattleID;
+		queryString += "&" + QueryParamTypes.actionType_abilityName + "=" + abilityName;
+		queryString += "&" + QueryParamTypes.actionType_damage + "=" + damage;
+		masterControl.getGossipController().blastMessage(queryString);
+	}
+	
+	// game over will be triggered on our end if we (or they) send an actionmessage with damage=critical
+	// There is no need to explicitly send a gameover message, because it can be determined locally whether the game is over.
 	
 	protected HashMap<String,String> generateParameterMapFromParameters(String[] parameters)
 	{
@@ -249,5 +317,4 @@ public class LogicServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
-
 }
