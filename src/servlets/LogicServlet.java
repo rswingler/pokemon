@@ -20,18 +20,16 @@ import java.util.HashMap;
  * Servlet implementation class HelloServlet
  */
 @WebServlet("/helloservlet") //BROWSER: POST host:port/helloservlet
-public class HelloServlet extends HttpServlet {
+public class LogicServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	   
 	private MasterController masterControl;
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public HelloServlet()
+    public LogicServlet()
     {
         super();
-        masterControl = MasterController.getInstance();
-        
     }
 
 	/**
@@ -39,6 +37,8 @@ public class HelloServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
+        masterControl = MasterController.getInstance();
+
 		response.addHeader("Content-Type", "application/json");
 		
 		String queryString = request.getQueryString();
