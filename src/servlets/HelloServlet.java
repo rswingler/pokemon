@@ -9,13 +9,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import controllers.GameState;
 import controllers.MasterController;
+import controllers.QueryParamTypes;
+import controllers.Player;
 
 import java.util.HashMap;
-import java.util.UUID;
-import servlets.GameState;
-import servlets.Player;
-import servlets.Messenger;
 
 /**
  * Servlet implementation class HelloServlet
@@ -23,17 +22,7 @@ import servlets.Messenger;
 @WebServlet("/helloservlet")
 public class HelloServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
-	private String myPeerID;
-	
-	// Battle Info
-	private GameState state;
-	private String currentBattleID;
-	private String currentBattlePeer;
-	private String opponentPokemon;
-	private Player player; // Player 1 is always the initiator, Player 2 is the one who "joined" the battle
-	private boolean battleInProgress; // As soon as we send or accept a request, we're locked into a battle. No takebacks.
-       
+	   
 	private MasterController masterControl;
     /**
      * @see HttpServlet#HttpServlet()
@@ -43,17 +32,6 @@ public class HelloServlet extends HttpServlet {
         super();
         masterControl = MasterController.getInstance();
         
-        // Generate new unique peerID
-        myPeerID = 	UUID.randomUUID().toString();
-        
-        // Start in the lobby
-        state = GameState.State_Lobby;
-        
-        currentBattleID = "none";
-        currentBattlePeer = "none";
-        opponentPokemon = "none";
-        player = Player.PlayerUnknown;
-        battleInProgress = false;
     }
 
 	/**
@@ -74,34 +52,34 @@ public class HelloServlet extends HttpServlet {
 		String battleID = "Unknown";
 				
 		// Determine the message type
-		if (parameterMap.containsKey(Messenger.queryParam_messageType))
+		if (parameterMap.containsKey(QueryParamTypes.queryParam_messageType))
 		{
-			messageType = parameterMap.get(Messenger.queryParam_messageType);
+			messageType = parameterMap.get(QueryParamTypes.queryParam_messageType);
 		}
 		
-		if (parameterMap.containsKey(Messenger.queryParam_fromPeer))
+		if (parameterMap.containsKey(QueryParamTypes.queryParam_fromPeer))
 		{
-			fromPeerID = parameterMap.get(Messenger.queryParam_fromPeer);
+			fromPeerID = parameterMap.get(QueryParamTypes.queryParam_fromPeer);
 		}
 		
-		if (parameterMap.containsKey(Messenger.queryParam_toPeer))
+		if (parameterMap.containsKey(QueryParamTypes.queryParam_toPeer))
 		{
-			toPeerID = parameterMap.get(Messenger.queryParam_toPeer);
+			toPeerID = parameterMap.get(QueryParamTypes.queryParam_toPeer);
 		}
 		
-		if (parameterMap.containsKey(Messenger.queryParam_battleUID))
+		if (parameterMap.containsKey(QueryParamTypes.queryParam_battleUID))
 		{
-			battleID = parameterMap.get(Messenger.queryParam_battleUID);
+			battleID = parameterMap.get(QueryParamTypes.queryParam_battleUID);
 		}
 		
 		// Only respond to this GET request if it was addressed to me, or all peers
-		if (toPeerID.equals(Messenger.toPeers_all) || toPeerID.equals(myPeerID))
+		if (toPeerID.equals(QueryParamTypes.toPeers_all) || toPeerID.equals(masterControl.myPeerID))
 		{
-			switch (state)
+			switch (masterControl.state)
 			{
 			case State_Lobby:
 				// From the lobby, only respond to Battle Request events
-				if (messageType.equals(Messenger.messageType_battleRequest))
+				if (messageType.equals(QueryParamTypes.messageType_battleRequest))
 				{
 					handleBattleRequestEvent(fromPeerID, battleID);
 				}
@@ -110,20 +88,20 @@ public class HelloServlet extends HttpServlet {
 				// Once we've responded to a request, must wait for requester to verify that battle has begun
 				// by sending us a battle accepted message. Alternatively, if we're the original requester, we must wait for
 				// someone to accept our request. Either way, it comes through here.
-				if (messageType.equals(Messenger.messageType_battleAccepted))
+				if (messageType.equals(QueryParamTypes.messageType_battleAccepted))
 				{
 					handleBattleAcceptedEvent(fromPeerID, battleID);
 				}
-				if (messageType.equals(Messenger.messageType_battleRejected))
+				if (messageType.equals(QueryParamTypes.messageType_battleRejected))
 				{
 					handleBattleRejectedEvent(fromPeerID, battleID);
 				}
 				break;
 			case State_WaitingForInfo:
 				// We've made a connection, now we need to know the name of the opponent's pokemon before beginning the game.
-				if (messageType.equals(Messenger.messageType_opponentInfo))
+				if (messageType.equals(QueryParamTypes.messageType_opponentInfo))
 				{
-					String opponentsPokemon = parameterMap.get(Messenger.opponentInfo_pokemon);
+					String opponentsPokemon = parameterMap.get(QueryParamTypes.opponentInfo_pokemon);
 					handlePokemonInfoEvent(fromPeerID, battleID, opponentsPokemon);
 				}
 				break;
@@ -131,10 +109,10 @@ public class HelloServlet extends HttpServlet {
 				// Ignore pretty much every event if it's my turn. The only thing we should do here is allow ourselves to take action.
 				break;
 			case State_TheirTurn:
-				if (messageType.equals(Messenger.messageType_playerAction))
+				if (messageType.equals(QueryParamTypes.messageType_playerAction))
 				{
-					String abilityName = parameterMap.get(Messenger.actionType_abilityName);
-					String damage = parameterMap.get(Messenger.actionType_damage);
+					String abilityName = parameterMap.get(QueryParamTypes.actionType_abilityName);
+					String damage = parameterMap.get(QueryParamTypes.actionType_damage);
 					handlePlayerActionEvent(fromPeerID, battleID, abilityName, damage);
 				}
 				break;
@@ -146,42 +124,38 @@ public class HelloServlet extends HttpServlet {
 	
 	protected void handleBattleRequestEvent(String fromPeerID, String battleID)
 	{
-		if (!battleInProgress)
+		if (!masterControl.battleInProgress)
 		{
 			// Set the info about the request (used to verify later)
-			currentBattlePeer = fromPeerID;
-			currentBattleID = battleID;
+			masterControl.currentBattlePeer = fromPeerID;
+			masterControl.currentBattleID = battleID;
 			
 			// TODO: Send back a "Battle Accepted" message via gossip
-			Messenger.SendStatus(Messenger.messageType_battleAccepted, myPeerID, fromPeerID, battleID);
 			
-			state = GameState.State_WaitingForReply;
-			player = Player.Player2; // By replying to a battle request, we signify that we are player 2
-			battleInProgress = true;
+			masterControl.state = GameState.State_WaitingForReply;
+			masterControl.player = Player.Player2; // By replying to a battle request, we signify that we are player 2
+			masterControl.battleInProgress = true;
 		}
 	}
 	
 	protected void handleBattleAcceptedEvent(String fromPeerID, String battleID)
 	{
-		if (battleInProgress)
+		if (masterControl.battleInProgress)
 		{
 			// TODO: Send back a "Battle Rejected" message via gossip
-			Messenger.SendStatus(Messenger.messageType_battleRejected, myPeerID, fromPeerID, battleID);
 		}
 		else
 		{
-			if (player == Player.Player1)
+			if (masterControl.player == Player.Player1)
 			{
 					// TODO: Send back a "Battle Accepted" message via gossip
-					state = GameState.State_WaitingForInfo;
-					Messenger.SendStatus(Messenger.messageType_battleAccepted, myPeerID, fromPeerID, battleID);
+					masterControl.state = GameState.State_WaitingForInfo;
 			}
-			else if (player == Player.Player2)
+			else if (masterControl.player == Player.Player2)
 			{
 				// TODO: Send back our pokemon info, signifying that the battle has begun!
-				state = GameState.State_WaitingForInfo;
+				masterControl.state = GameState.State_WaitingForInfo;
 				//TODO: USE POKE API TO GET POKEMON DATA TO SEND IN THIS REQUEST
-				Messenger.SendInfo(Messenger.messageType_opponentInfo, myPeerID, fromPeerID, battleID, "Pikachu", "Electric");
 			}
 			else
 			{
@@ -192,21 +166,21 @@ public class HelloServlet extends HttpServlet {
 	
 	protected void handleBattleRejectedEvent(String fromPeerID, String battleID)
 	{
-		if (player == Player.Player1)
+		if (masterControl.player == Player.Player1)
 		{
 			// TODO: RESET ANY STATE DATA RELATED TO THE OTHER PLAYER
 			// If all peers send a BattleRejected (everyone else is currently in a battle)
 			// Then either broadcast out another battle request, or return to lobby state.
 		}
-		else if (player == Player.Player2)
+		else if (masterControl.player == Player.Player2)
 		{
 			// RESET ANY DATA RELATED TO THE OTHER PLAYER
-			currentBattleID = "none";
-	        currentBattlePeer = "none";
-	        opponentPokemon = "none";
-			state = GameState.State_Lobby;
-			player = Player.PlayerUnknown;
-			battleInProgress = false;
+			masterControl.currentBattleID = "none";
+	        masterControl.currentBattlePeer = "none";
+	        masterControl.opponentPokemon = "none";
+			masterControl.state = GameState.State_Lobby;
+			masterControl.player = Player.PlayerUnknown;
+			masterControl.battleInProgress = false;
 		}
 		else
 		{
@@ -216,15 +190,14 @@ public class HelloServlet extends HttpServlet {
 	
 	protected void handlePokemonInfoEvent(String fromPeerID, String battleID, String pokemonName)
 	{
-		if (player == Player.Player1)
+		if (masterControl.player == Player.Player1)
 		{
 			// TODO: Send back our pokemon info, signifying that the battle has begun!
-			state = GameState.State_MyTurn;
-			Messenger.SendInfo(Messenger.messageType_opponentInfo, myPeerID, fromPeerID, battleID, "Pikachu", "Electric");
+			masterControl.state = GameState.State_MyTurn;
 		}
-		else if (player == Player.Player2)
+		else if (masterControl.player == Player.Player2)
 		{
-			state = GameState.State_TheirTurn;
+			masterControl.state = GameState.State_TheirTurn;
 		}
 		else
 		{
@@ -240,15 +213,15 @@ public class HelloServlet extends HttpServlet {
 	    // Only "critical" damage ends the game. The other two do absolutely nothing (we don't even keep track of health)
 	    // other than display fun messages, but no one has to know that except us devs ;)
 		
-		if (damage.equals(Messenger.damageType_critical))
+		if (damage.equals(QueryParamTypes.damageType_critical))
 		{
 			// End game (somehow)
 		}
-		else if (damage.equals(Messenger.damageType_effective))
+		else if (damage.equals(QueryParamTypes.damageType_effective))
 		{
 			
 		}
-		else if (damage.equals(Messenger.damageType_notEffective))
+		else if (damage.equals(QueryParamTypes.damageType_notEffective))
 		{
 			
 		}

@@ -1,4 +1,4 @@
-package servlets;
+package controllers;
 
 public enum GameState {
 	State_Lobby,

@@ -1,6 +1,6 @@
-package servlets;
+package controllers;
 
-public class Messenger
+public class QueryParamTypes
 {
 	public static final String queryParam_battleUID = "battleUID";
 	public static final String queryParam_fromPeer = "fromPeer";
@@ -25,23 +25,4 @@ public class Messenger
 	// We don't even need the pokemon type for now. Let's just use the pokemon name for the time being.
 	public static final String opponentInfo_pokemonType = "pokemonType"; // Water, Fire, etc.
 	
-	public Messenger()
-	{
-		
-	}
-	
-	public static void SendStatus(String messageType, String fromPeerID, String toPeerID, String battleID)
-	{
-		// TODO: USE THIS TO SEND REQUESTS, THIS SHOULD REPLACE THE GOSSIP PROTOCOL
-	}
-	
-	public static void SendInfo(String messageType, String fromPeerID, String toPeerID, String battleID, String pokemonName, String pokemonType)
-	{
-		// TODO: USE THIS TO SEND REQUESTS, THIS SHOULD REPLACE THE GOSSIP PROTOCOL
-	}
-	
-	public static void SendBattleData() // TODO: NEEDS PARAMETERS FILLED IN
-	{
-		// TODO: USE THIS TO SEND REQUESTS, THIS SHOULD REPLACE THE GOSSIP PROTOCOL
-	}
 }
