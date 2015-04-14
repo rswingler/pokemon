@@ -19,15 +19,15 @@ import java.util.HashMap;
 /**
  * Servlet implementation class HelloServlet
  */
-@WebServlet("/helloservlet")
-public class HelloServlet extends HttpServlet {
+@WebServlet("/logicservlet")
+public class LogicServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	   
 	private MasterController masterControl;
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public HelloServlet()
+    public LogicServlet()
     {
         super();
         masterControl = MasterController.getInstance();
