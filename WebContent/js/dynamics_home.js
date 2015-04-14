@@ -51,6 +51,8 @@ function loadPokemon( pokemon )
 	infoBox.append("SPEED: " + speed + "<br>");
 	infoBox.append("HP: " + hp + "<br>");
 	infoBox.append("ATTACK: " + attack + "<br>");
+	infoBox.append("DEFENSE: " + defense + "<br>");
+
 
 
 	//console.log(data);
